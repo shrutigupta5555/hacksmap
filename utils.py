@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 
 
-param = 'Chinmay-KB'
+param = 'shrutigupta5555'
 
 def getavatar(param):
     
@@ -12,7 +12,7 @@ def getavatar(param):
     soup = BeautifulSoup(res.text, features="html.parser")
 
     avatarurl = soup.find('img', attrs = {"class": "user-photo"})
-    print(avatarurl)
+    # print(avatarurl)
     return avatarurl['src']
 
 def getdisplayname(param):
@@ -46,10 +46,13 @@ def getTotalProjects(param):
     for i in range(pages):
         x = i + 1
         url = "https://devpost.com/" + param + "?page=" + str(x)
-        print(url)
+        # print(url)
         res = requests.get(url)
         soup = BeautifulSoup(res.text)
-        projectsDiv =  soup.find_all('div', attrs = {"class": "gallery-item"})
+        try:
+            projectsDiv =  soup.find_all('div', attrs = {"class": "gallery-item"})
+        except:
+            projectsDiv=[]
         for projects in projectsDiv:
             p = {}
             projecturl = projects.find('img', attrs = {"class": "software_thumbnail_image"})['src']
@@ -79,7 +82,7 @@ def getTotalProjects(param):
                         memberLink[id] = name
             p['team'] = teamlist
             projectlist.append(p)
-    print(projectlist)     
+    # print(projectlist)     
     return projectlist, memberCount, memberLink      
                 
     
@@ -104,5 +107,42 @@ def getfriendslocation(param):
             curr = ""
         loc[key] = curr
     return loc
+
+
+def getfollowers(param):
+    url = "https://devpost.com/" + param
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text)
+
+    try:
+        followers = soup.find('li', attrs = {"data-followers-tab": "true"}).getText().strip().split(" ")[0]
+    except:
+        followers = 0
+    # print(followers)
+    return followers
+
+
+# getfollowers("aakzsh")
+
+def winnerandparticipated(param):
+    url = "https://devpost.com/"+param+"/achievements"
+    # print(url)
+
+    res = requests.get(url)
+    soup = BeautifulSoup(res.text)
+
+    try:
+        participatedDiv =  soup.find('div', attrs = {'id': 'achievement_3'})
+        participated = participatedDiv.find('h5').getText().strip().split(" ")[-1]
+    except:
+        participated = 0
+
+    try:
+        winnerDiv = soup.find('div', attrs = {'id': 'achievement_5'})
+        winner = winnerDiv.find('h5').getText().strip().split(" ")[-1]
+    except:
+        winner = 0
+    
+    return winner, participated
 # getavatar(param)
-print(getfriendslocation(param))
+# print(getfriendslocation(param))
