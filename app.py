@@ -116,15 +116,17 @@ def wrapped(username):
 # hacker_info = []
 @app.route('/map/<username>')
 def map(username):
-    
-    hackername = getdisplayname(username)
-    hackeravatar = getavatar(username)
-    projectlist, memberCount, memberLink = getTotalProjects(username)
+    #hackername = getdisplayname(username)
+    #hackeravatar = getavatar(username)
+    #projectlist, memberCount, memberLink = getTotalProjects(username)
     loc = getfriendslocation(username)
     nameAndLatlng = {}
     for hacker in loc.keys():
         if loc[hacker] != '':
-            nameAndLatlng[hacker] = [locateHacker(loc[hacker]), getavatar(hacker)]
+            try:
+                nameAndLatlng[hacker] = [locateHacker(loc[hacker]), getavatar(hacker), getdisplayname(hacker)]
+            except:
+                pass
     # print(nameAndLatlng)
     return render_template('map.html', nameAndLatlng=nameAndLatlng)
 
